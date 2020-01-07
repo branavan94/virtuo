@@ -164,6 +164,7 @@ function fetch(cars,rentals)
 {
 	const tab = []
 	const tab1 = []
+	const tab_priceppl = []
 	for(var i = 0; i <3;i++)
 	{
 	var date = DaysBetween(rentals[i].pickupDate,rentals[i].returnDate)
@@ -173,9 +174,24 @@ function fetch(cars,rentals)
 	var distance_component = rentals[i].distance*a.pricePerKm
 	tab.push(time_component)
 	tab1.push(distance_component)
+	var price = time_component+distance_component
+	if(1<date<=4){
+		price = price*0.90
 	}
-	const tab_final = [{tab},{tab1}]
+	if(4<date<=10){
+		price = price*0.70
+	}
+	if(date>10){
+		price = price*0.50
+	}
+	tab_priceppl.push(price)
+	}
+	const tab_final = [{tab},{tab1},{tab_priceppl}]
 	return tab_final
+}
+function compute_commission()
+{
+
 }
 function find(carId,cars)
 {
