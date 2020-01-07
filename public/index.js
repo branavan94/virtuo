@@ -32,7 +32,7 @@ const rentals = [{
     'firstName': 'Roman',
     'lastName': 'Frayssinet'
   },
-  'carId': 'f944a3ff-591b-4d5b-9b67-c7e08cba9791',
+  'carId': 'a9c1b91b-5e3d-4cec-a3cb-ef7eebb4892e',
   'pickupDate': '2020-01-02',
   'returnDate': '2020-01-02',
   'distance': 100,
@@ -73,6 +73,7 @@ const rentals = [{
   'carId': '4afcc3a2-bbf4-44e8-b739-0179a6cd8b7d',
   'pickupDate': '2019-12-01',
   'returnDate': '2019-12-15',
+  'distance': 190,
   'options': {
     'deductibleReduction': true
   },
@@ -157,6 +158,43 @@ const actors = [{
   }]
 }];
 
+const rental_price = fetch(cars,rentals)
+
+function fetch(cars,rentals)
+{
+	const tab = []
+	const tab1 = []
+	for(var i = 0; i <3;i++)
+	{
+	var date = DaysBetween(rentals[i].pickupDate,rentals[i].returnDate)
+	var a = find(cars[i].carId,cars)
+
+	var time_component = date*parseInt(a.pricePerDay)
+	var distance_component = rentals[i].distance*a.pricePerKm
+	tab.push(time_component)
+	tab1.push(distance_component)
+	}
+	const tab_final = [{tab},{tab1}]
+	return tab_final
+}
+function find(carId,cars)
+{
+	var a = null;
+	for (var i = 0; i < cars.length; i++) 
+	{
+		if(carId == cars[i].carId)
+		{
+				a = cars[i]
+		}
+	}
+	return a
+}
+function DaysBetween(StartDate, EndDate) {
+  var start = parseInt(StartDate.split('-')[2],10)
+  var end = parseInt(EndDate.split('-')[2],10)
+  return end - start +1
+}
+console.log(rental_price)
 console.log(cars);
 console.log(rentals);
 console.log(actors);
