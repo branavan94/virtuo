@@ -158,22 +158,34 @@ const actors = [{
   }]
 }];
 
-const rental_price = fetch(cars,rentals)
+const rental_price = fetch(cars,rentals,actors)
 
-function fetch(cars,rentals)
+function fetch(cars,rentals,actors)
 {
 	const tab = []
 	const tab1 = []
 	const tab_priceppl = []
+	const tab_commission = []
+	var comm = 0
+	var insurance = 0
+	var treasury = 0
+	var virtuo = 0
 	for(var i = 0; i <3;i++)
 	{
 	var date = DaysBetween(rentals[i].pickupDate,rentals[i].returnDate)
 	var a = find(cars[i].carId,cars)
-
-	var time_component = date*parseInt(a.pricePerDay)
+	var time_component = 0
+	if(rentals[i].options.deductibleReduction == true)
+	{
+		time_component = date*parseInt(a.pricePerDay)+ 4*date
+	}
+	else
+	{
+		time_component = date*parseInt(a.pricePerDay)
+	}
 	var distance_component = rentals[i].distance*a.pricePerKm
-	tab.push(time_component)
-	tab1.push(distance_component)
+	tab.push({time_component})
+	tab1.push({distance_component})
 	var price = time_component+distance_component
 	if(1<date<=4){
 		price = price*0.90
@@ -184,14 +196,22 @@ function fetch(cars,rentals)
 	if(date>10){
 		price = price*0.50
 	}
-	tab_priceppl.push(price)
+	tab_priceppl.push({price})
+	comm = 0.30 * price
+	insurance = comm* 0.5
+	comm = comm - insurance
+	treasury = 1 * date
+	comm = comm - treasury
+	virtuo = comm //the rest
+	tab_commission.push({insurance,treasury,virtuo})
+	actors[i].payment[0].amount = price
+	actors[i].payment[1].amount = price*0.70
+	actors[i].payment[2].amount = insurance
+	actors[i].payment[3].amount = treasury
+	actors[i].payment[4].amount = virtuo
 	}
-	const tab_final = [{tab},{tab1},{tab_priceppl}]
+	const tab_final = [{tab},{tab1},{tab_priceppl},{tab_commission}]
 	return tab_final
-}
-function compute_commission()
-{
-
 }
 function find(carId,cars)
 {
